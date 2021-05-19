@@ -28,10 +28,13 @@ router.get("/states/:abbrev", async (req, res) => {
       }
 });
 
-//POST - new state
+//POST - add new state
 router.post("/states", async (req, res) => {
-
-    try {
+  try {
+    const exisiting = await db.one ('SELECT abbrev, name FROM states WHERE abbrev = $(abbrev)', {abbrev: req.body.abbrev});
+    if(exisiting){
+      return res.status(400).send('te state already exists')
+    }
         await db.none('INSERT INTO states (abbrev, name) VALUES ($(abbrev), $(name))', {
             abbrev: req.body.abbrev,
             name: req.body.name
