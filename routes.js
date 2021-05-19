@@ -46,6 +46,7 @@ router.post("/states", async (req, res) => {
     }
 });
 
+//get cities by id
 router.get("/cities", async (req, res) => {
   res.json(await db.many(`
         SELECT c.id, s.name as state, c.name as city
@@ -79,6 +80,13 @@ router.post("/cities", async (req, res) => {
   }
 });
 
+router.get("/temperature", async (req, res)=> {
+  res.json(
+    await db.manyOrNone('')
+  )
+})
+
+//get a city by id
 router.get("/cities", async (req, res) => {
   res.json(
     await db.many(`
