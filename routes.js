@@ -29,6 +29,7 @@ router.get("/states/:abbrev", async (req, res) => {
 });
 
 //POST - add new state
+//try catch handles the errors quickly along with not having to wait 20 seconds to time out.
 router.post("/states", async (req, res) => {
   try {
     const exisiting = await db.one ('SELECT abbrev, name FROM states WHERE abbrev = $(abbrev)', {abbrev: req.body.abbrev});
@@ -43,9 +44,11 @@ router.post("/states", async (req, res) => {
         const state = await db.one('SELECT abbrev, name FROM states WHERE abbrev = $(abbrev)', {abbrev: req.body.abbrev});
 
         res.status(201).json(state);
-    } catch (ex) {
-        console.log (ex);
-        res.status(500).send(ex);
+
+    } catch (error) {
+
+        if (error.constraint === 'states_pkey')
+        return res.status(400).send ('The state already exisits');
     }
 });
 
